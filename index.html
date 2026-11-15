@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>扭蛋樂透抽獎機</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="gacha-wrap">
+  <header class="title-area">
+    <h1>扭蛋樂透抽獎機</h1>
+  </header>
+
+  <div class="row-container">
+    <!-- 左側：扭蛋機 -->
+    <div class="machine-col">
+      <div class="egg-machine">
+        <div class="machine-top">
+          <span class="light"></span>
+          <span class="light"></span>
+          <span class="light"></span>
+          <span class="light"></span>
+          <span class="light"></span>
+        </div>
+
+        <div class="machine-body">
+          <div class="spin-cage">
+            <div class="cage-shine"></div>
+            <div class="egg-inner" id="eggInner"></div>
+          </div>
+
+          <div class="egg-outlet">
+            <div class="pipe-top"></div>
+            <div class="fall-zone" id="fallZone"></div>
+          </div>
+        </div>
+
+        <div class="machine-base">
+          <div class="dispenser">
+            <div class="dispenser-hole"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右側：獎品清單 + 按鈕 + 開獎結果 -->
+    <div class="form-col">
+      <div class="prize-set">
+        <p>獎品清單（一行一個，對應1~7號扭蛋）</p>
+        <textarea id="prizeTextarea" placeholder=" "></textarea>
+      </div>
+      <button class="start-btn" id="startBtn">開始抽獎</button>
+      <!-- 開獎結果移到這裡 -->
+      <div class="result-area" id="resultBox">
+        <small>等待開獎</small>
+        <div class="result-egg"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

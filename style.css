@@ -1,0 +1,423 @@
+:root{
+  --main-purple:#9778d6;
+  --ink:#443258;
+}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+body{
+  min-height:100vh;
+  padding:30px 16px;
+  display:grid;
+  place-items:center;
+  font-family:"Noto Sans TC",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(#f7e4f0 6%, transparent 6%),
+    radial-gradient(#e5edfb 6%, transparent 6%);
+  background-size:40px 40px;
+  background-position:0 0,20px 20px;
+  background-color:#f9f0f7;
+}
+.gacha-wrap{
+  width:min(100%,820px);
+  background:#ffffffdd;
+  padding:28px 24px;
+  border-radius:32px;
+  box-shadow:0 14px 30px #c7aedb70, 0 26px 50px #c2a8d645;
+  border:2px solid #fff;
+}
+.title-area{
+  text-align:center;
+  margin-bottom:24px;
+}
+h1{
+  font-size:30px;
+  margin-bottom:6px;
+}
+.tip{
+  color:#927ca6;
+  font-size:14px;
+}
+
+/* 左右橫排容器 */
+.row-container{
+  display:flex;
+  gap:28px;
+  align-items:flex-start;
+}
+.machine-col{
+  flex:0 0 360px;
+}
+.form-col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* ===== 扭蛋機｜淡藍色玻璃 ===== */
+.egg-machine{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  filter:drop-shadow(0 18px 24px rgba(100,120,160,0.22));
+}
+.machine-top{
+  width:320px;
+  height:28px;
+  background:rgba(210, 230, 255, 0.55);
+  border:2px solid rgba(170, 210, 255, 0.75);
+  border-radius:14px 14px 4px 4px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 18px;
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.5),
+    0 4px 10px rgba(120,160,210,0.25);
+}
+.machine-top .light{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #fff7a8, #ffb020 60%, #d77600);
+  box-shadow:0 0 12px #ffd34d, 0 0 4px #fff;
+}
+.machine-body{
+  width:340px;
+  background:rgba(200, 225, 255, 0.38);
+  border:6px solid rgba(160, 200, 255, 0.65);
+  border-radius:24px 24px 18px 18px;
+  padding:22px 20px 18px;
+  position:relative;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow:
+    inset 0 6px 12px rgba(255,255,255,0.4),
+    inset 0 -10px 20px rgba(120,160,210,0.15),
+    0 10px 20px rgba(120,160,210,0.2);
+}
+.machine-body::before{
+  content:"";
+  position:absolute;
+  left:10px;
+  right:10px;
+  top:12px;
+  height:6px;
+  background:rgba(255,255,255,0.5);
+  border-radius:10px;
+}
+.machine-body::after{
+  content:"LUCKY EGG";
+  position:absolute;
+  right:18px;
+  top:20px;
+  font-size:11px;
+  letter-spacing:2px;
+  color:rgba(80,110,150,0.75);
+  font-weight:bold;
+}
+.spin-cage{
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  border:14px solid rgba(160, 200, 255, 0.6);
+  background:rgba(205, 230, 255, 0.32);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  position:relative;
+  overflow:hidden;
+  margin:18px auto 10px;
+  box-shadow:
+    inset 0 0 35px rgba(180,210,255,0.35),
+    inset 0 0 0 4px rgba(255,255,255,0.4);
+}
+.cage-shine{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:linear-gradient(130deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 45%);
+  pointer-events:none;
+}
+.egg-inner{
+  width:100%;
+  height:100%;
+  position:absolute;
+  transition: transform 2.4s cubic-bezier(0.2,0.8,0.2,1);
+}
+.egg{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  text-shadow:0 1px 2px #0003;
+  box-shadow:
+    inset -6px -6px 10px rgba(0,0,0,0.18),
+    inset 7px 7px 10px rgba(255,255,255,0.45),
+    0 3px 6px rgba(0,0,0,0.12);
+}
+.egg::after{
+  content:"";
+  position:absolute;
+  top:7px;
+  left:9px;
+  width:10px;
+  height:6px;
+  background:rgba(255,255,255,0.65);
+  border-radius:50%;
+}
+.fall-egg{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  text-shadow:0 1px 3px #0004;
+  box-shadow:
+    inset -7px -7px 12px rgba(0,0,0,0.18),
+    inset 8px 8px 12px rgba(255,255,255,0.45),
+    0 4px 8px rgba(0,0,0,0.15);
+}
+.fall-egg::after{
+  content:"";
+  position:absolute;
+  top:10px;
+  left:13px;
+  width:14px;
+  height:8px;
+  background:rgba(255,255,255,0.65);
+  border-radius:50%;
+}
+.egg-outlet{
+  width:86px;
+  height:110px;
+  background:rgba(200, 225, 255, 0.42);
+  border:2px solid rgba(160, 200, 255, 0.65);
+  border-radius:0 0 18px 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:0 auto;
+  padding-top:6px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow:inset 0 6px 12px rgba(120,160,210,0.15);
+}
+.pipe-top{
+  width:36px;
+  height:12px;
+  background:rgba(160, 190, 230, 0.55);
+  border-radius:0 0 8px 8px;
+}
+.fall-zone{
+  flex:1;
+  display:flex;
+  align-items:flex-end;
+}
+.machine-base{
+  width:360px;
+  height:30px;
+  background:rgba(190, 215, 245, 0.45);
+  border:4px solid rgba(160, 200, 255, 0.65);
+  border-top:none;
+  border-radius:4px 4px 18px 18px;
+  position:relative;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.dispenser{
+  position:absolute;
+  top:-46px;
+  left:50%;
+  transform:translateX(-50%);
+  width:70px;
+  height:50px;
+  background:rgba(200, 225, 255, 0.42);
+  border:4px solid rgba(160, 200, 255, 0.65);
+  border-radius:10px 10px 14px 14px;
+  display:flex;
+  justify-content:center;
+  padding-top:4px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.dispenser-hole{
+  width:40px;
+  height:14px;
+  background:rgba(40,40,40,0.75);
+  border-radius:4px;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* ===== 獎品輸入區 ===== */
+.prize-set p{
+  margin-bottom:6px;
+  font-size:14px;
+}
+#prizeTextarea{
+  width:100%;
+  min-height:240px;
+  padding:12px;
+  border:2px solid #e6d9f0;
+  border-radius:14px;
+  font-family:inherit;
+  font-size:14px;
+  outline:none;
+  background:#fff;
+  pointer-events:auto !important;
+}
+#prizeTextarea:focus{
+  border-color:#b397dd;
+  box-shadow:0 0 0 4px #c8ace638;
+}
+.start-btn{
+  width:100%;
+  border:none;
+  padding:16px;
+  border-radius:20px;
+  background:linear-gradient(110deg,#f097bc,#9778d6);
+  color:#fff;
+  font-family:inherit;
+  font-size:20px;
+  box-shadow:0 6px 0 #785bb0,0 10px 20px #b28dca48;
+  cursor:pointer;
+  transition:0.12s;
+  margin-bottom:24px;
+}
+.start-btn:active{
+  transform:translateY(3px);
+  box-shadow:0 2px 0 #785bb0;
+}
+.start-btn:disabled{
+  opacity:0.6;
+  cursor:wait;
+  transform:none;
+}
+
+/* ===== 開獎結果（放大，在按鈕下方） ===== */
+.result-area{
+  min-height:140px;
+  padding:20px;
+  border:2px dashed #ddcbe8;
+  border-radius:24px;
+  background:#fffaff;
+  text-align:center;
+}
+.result-area small{
+  color:#9c87b0;
+  font-size:15px;
+  display:block;
+  margin-bottom:14px;
+}
+.result-egg{
+  display:flex;
+  justify-content:center;
+  transform:scale(1.25);
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-140px) scale(0.6);
+    opacity:0.3;
+  }
+  100%{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+}
+
+.egg-1{background:linear-gradient(135deg,#ffb9d1,#ed78a8)}
+.egg-2{background:linear-gradient(135deg,#b2d6ff,#72a4e8)}
+.egg-3{background:linear-gradient(135deg,#ffe99b,#f6cd4c)}
+.egg-4{background:linear-gradient(135deg,#b0f0c8,#54c284)}
+.egg-5{background:linear-gradient(135deg,#ffd1b2,#ff9859)}
+.egg-6{background:linear-gradient(135deg,#b4ecf3,#49c0d6)}
+.egg-7{background:linear-gradient(135deg,#dccbff,#9f84d8)}
+
+/* ===== 繽紛開獎結果 ===== */
+.result-celebration{
+  background:
+    radial-gradient(circle at 20% 20%, #ffe9f5 0%, transparent 40%),
+    radial-gradient(circle at 80% 10%, #e4f0ff 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, #fff7d6 0%, transparent 50%),
+    linear-gradient(180deg,#fff7fb,#f0f7ff);
+  border-color:#ffb0d6;
+  box-shadow:
+    0 0 0 4px #ffe7f4,
+    0 0 24px #ff9edb88,
+    0 0 48px #b397dd55;
+  animation:celebrationPulse 0.9s ease-in-out infinite alternate;
+}
+.result-celebration .result-egg{
+  animation:popStar 0.5s cubic-bezier(0.2,1.6,0.4,1) both;
+}
+.result-celebration small{
+  color:#d64f9d;
+  font-weight:bold;
+  text-shadow:0 0 8px #ffd1ec;
+}
+
+@keyframes celebrationPulse{
+  from{ box-shadow:0 0 0 4px #ffe7f4, 0 0 24px #ff9edb88, 0 0 48px #b397dd55; }
+  to{ box-shadow:0 0 0 6px #ffe7f4, 0 0 34px #ff9edbbb, 0 0 64px #b397dd88; }
+}
+@keyframes popStar{
+  0%{ transform:scale(0.3) rotate(-20deg); opacity:0; }
+  60%{ transform:scale(1.35) rotate(8deg); opacity:1; }
+  100%{ transform:scale(1.25) rotate(0deg); opacity:1; }
+}
+
+/* 手機自動變直排 */
+@media(max-width:768px){
+  .row-container{
+    flex-direction:column;
+  }
+  .machine-col{
+    flex:0 0 auto;
+    width:100%;
+  }
+  .machine-top{
+    width:280px;
+  }
+  .machine-body{
+    width:300px;
+  }
+  .machine-base{
+    width:320px;
+  }
+  .spin-cage{
+    width:220px;
+    height:220px;
+  }
+  .egg{
+    width:36px;
+    height:36px;
+    font-size:12px;
+  }
+  .fall-egg{
+    width:52px;
+    height:52px;
+    font-size:14px;
+  }
+  .result-egg{
+    transform:scale(1.1);
+  }
+}
