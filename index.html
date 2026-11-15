@@ -3,17 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>扭蛋樂透抽獎機</title>
+<title>超級扭蛋抽獎機</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+<style>
+    /* 1. 定義本機源泉圓體字型 */
+    @font-face {
+      font-family: "MyGenSenRounded";
+      src: url("./fonts/GenSenRounded2TW-R.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    * {
+      font-family: "MyGenSenRounded", "微軟正黑體", sans-serif !important;
+    }
+  </style>
 </head>
 <body>
 <main class="gacha-wrap">
   <header class="title-area">
-    <h1>扭蛋樂透抽獎機</h1>
+    <h1>超級扭蛋抽獎機</h1>
   </header>
 
   <div class="row-container">
@@ -51,7 +64,7 @@
     <!-- 右側：獎品清單 + 按鈕 + 開獎結果 -->
     <div class="form-col">
       <div class="prize-set">
-        <p>獎品清單（一行一個，對應1~7號扭蛋）</p>
+        <p>獎品清單（一行一個獎品，對應1~7號扭蛋）</p>
         <textarea id="prizeTextarea" placeholder=" "></textarea>
       </div>
       <button class="start-btn" id="startBtn">開始抽獎</button>
