@@ -10,7 +10,6 @@
 
 <link rel="stylesheet" href="style.css">
 <style>
-    /* 1. 定義本機源泉圓體字型 */
     @font-face {
       font-family: "MyGenSenRounded";
       src: url("./fonts/GenSenRounded2TW-R.otf") format("opentype");
@@ -61,14 +60,13 @@
       </div>
     </div>
 
-    <!-- 右側：獎品清單 + 按鈕 + 開獎結果 -->
     <div class="form-col">
       <div class="prize-set">
         <p>獎品清單（一行一個獎品，對應1~7號扭蛋）</p>
         <textarea id="prizeTextarea" placeholder=" "></textarea>
       </div>
       <button class="start-btn" id="startBtn">開始抽獎</button>
-      <!-- 開獎結果移到這裡 -->
+        
       <div class="result-area" id="resultBox">
         <small>等待開獎</small>
         <div class="result-egg"></div>
