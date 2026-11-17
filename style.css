@@ -151,7 +151,7 @@ h1{
   width:100%;
   height:100%;
   position:absolute;
-  transition: transform 2.4s cubic-bezier(0.2,0.8,0.2,1);
+  transition: transform 2.9s cubic-bezier(0.12, 0.85, 0.2, 1.15);
 }
 .egg{
   width:52px;
@@ -420,4 +420,199 @@ h1{
   .result-egg{
     transform:scale(1.1);
   }
+}
+
+/* ===== 復古玩具配色 ===== */
+:root{
+  --main-purple:#c74335;
+  --ink:#593326;
+}
+body{
+  background:
+    radial-gradient(#dca844 2px,transparent 2.5px),
+    radial-gradient(#dca844 2px,transparent 2.5px),
+    #f7e9c9;
+  background-size:32px 32px;
+  background-position:0 0,16px 16px;
+}
+.gacha-wrap{
+  background:#fff8e9;
+  border:3px solid #593326;
+  border-radius:20px;
+  box-shadow:0 8px 0 #c9974d,0 16px 28px #75502b38;
+}
+h1{
+  color:#b6382e;
+  letter-spacing:2px;
+  text-shadow:2px 2px 0 #f2cf79;
+}
+.tip{
+  color:#8a6544;
+}
+.egg-machine{
+  filter:drop-shadow(0 12px 0 #a9763e);
+}
+.machine-top{
+  background:#bf3e32;
+  border:3px solid #74352a;
+  border-bottom:5px solid #74352a;
+  border-radius:12px 12px 4px 4px;
+  box-shadow:inset 0 3px 0 #e77a52,0 4px 0 #e2b75e;
+}
+.machine-top .light{
+  background:radial-gradient(circle at 30% 30%,#fff5a8,#f4c343 60%,#c47b20);
+  box-shadow:0 0 8px #f4c343,0 0 2px #fff;
+}
+.machine-body{
+  background:#f7d98f;
+  border:7px solid #bf3e32;
+  border-radius:16px 16px 12px 12px;
+  box-shadow:
+    inset 0 0 0 3px #f9e9bd,
+    inset 0 -12px 18px #c8873430,
+    0 7px 0 #74352a;
+}
+.machine-body::before{
+  background:#fff8e8;
+  opacity:.75;
+}
+.machine-body::after{
+  content:"GACHA!";
+  top:20px;
+  right:14px;
+  padding:4px 7px;
+  border:2px solid #74352a;
+  border-radius:5px;
+  background:#fff1c8;
+  color:#b6382e;
+  font-size:10px;
+  letter-spacing:1px;
+}
+.spin-cage{
+  border:12px solid #e2aa43;
+  background:#fff3cf;
+  box-shadow:
+    inset 0 0 0 4px #fff9e9,
+    inset 0 0 35px #dca84444,
+    0 0 0 3px #9a552d;
+}
+.cage-shine{
+  background:linear-gradient(130deg,#fff9e9b5 0%,transparent 45%);
+}
+.egg-outlet{
+  background:#efc66c;
+  border:3px solid #9a552d;
+  border-radius:0 0 14px 14px;
+  box-shadow:inset 0 5px 10px #9a552d30;
+}
+.pipe-top{
+  background:#bd7540;
+}
+.machine-base{
+  background:#bf3e32;
+  border:4px solid #74352a;
+  border-top:none;
+  border-radius:4px 4px 14px 14px;
+  box-shadow:inset 0 -5px 0 #9d332a;
+}
+.dispenser{
+  background:#e4b85e;
+  border:4px solid #74352a;
+  border-radius:8px 8px 12px 12px;
+}
+.dispenser-hole{
+  background:#593326;
+}
+#prizeTextarea{
+  border:2px solid #d5ad66;
+  border-radius:10px;
+  background:#fffdf6;
+}
+#prizeTextarea:focus{
+  border-color:#bf3e32;
+  box-shadow:0 0 0 4px #bf3e3224;
+}
+.start-btn{
+  border:2px solid #74352a;
+  border-radius:10px;
+  background:linear-gradient(110deg,#e85a42,#b8322c);
+  box-shadow:0 6px 0 #74352a,0 10px 18px #9a552d35;
+}
+.start-btn:active{
+  box-shadow:0 2px 0 #74352a;
+}
+.result-area{
+  border:2px dashed #c99a4e;
+  border-radius:12px;
+  background:#fff9e9;
+}
+.result-area small{
+  color:#8a6544;
+}
+.result-celebration{
+  background:
+    radial-gradient(circle at 20% 20%,#fff1c8 0%,transparent 40%),
+    radial-gradient(circle at 80% 10%,#f8dca0 0%,transparent 45%),
+    linear-gradient(180deg,#fff9e9,#f8e8c3);
+  border-color:#d94a36;
+  box-shadow:0 0 0 4px #f8e4b5,0 0 24px #d94a3655,0 0 48px #e2aa4355;
+}
+.result-celebration small{
+  color:#b6382e;
+  text-shadow:0 0 8px #f8dca0;
+}
+@keyframes celebrationPulse{
+  from{box-shadow:0 0 0 4px #f8e4b5,0 0 24px #d94a3655,0 0 48px #e2aa4355}
+  to{box-shadow:0 0 0 6px #f8e4b5,0 0 34px #d94a3680,0 0 64px #e2aa4380}
+}
+.egg-1{background:linear-gradient(135deg,#ff886b,#d83b36)}
+.egg-2{background:linear-gradient(135deg,#78bde2,#347bb4)}
+.egg-3{background:linear-gradient(135deg,#ffe17b,#e6a923)}
+.egg-4{background:linear-gradient(135deg,#8dcc72,#438b48)}
+.egg-5{background:linear-gradient(135deg,#ffb15e,#e66e35)}
+.egg-6{background:linear-gradient(135deg,#72d0c4,#318d8a)}
+.egg-7{background:linear-gradient(135deg,#c59add,#8054a5)}
+
+/* 精緻扭蛋殼：珍珠光澤、細緻接縫與高光 */
+.egg,
+.fall-egg{
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid #fff9;
+  box-shadow:
+    inset 0 1px 2px #fff9,
+    inset -6px -8px 12px #0003,
+    inset 5px 5px 10px #fff6,
+    0 3px 7px #57351f40;
+}
+.egg::before,
+.fall-egg::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:0;
+  right:0;
+  top:49%;
+  height:5px;
+  border-top:1px solid #fff9;
+  border-bottom:1px solid #70391e40;
+  background:linear-gradient(180deg,#fff5,#ffffff12 55%,#6b351e20);
+  box-shadow:0 1px 2px #713d2525;
+  pointer-events:none;
+}
+.egg::after,
+.fall-egg::after{
+  z-index:1;
+  top:12%;
+  left:18%;
+  width:24%;
+  height:13%;
+  background:linear-gradient(135deg,#fffF,#fff8 55%,#fff0);
+  border-radius:50%;
+  transform:rotate(-32deg);
+  box-shadow:0 0 5px #fff7;
+  pointer-events:none;
+}
+.fall-egg{
+  position:relative;
 }
