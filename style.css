@@ -1,3 +1,14 @@
+@font-face {
+  font-family: "MyGenSenRounded";
+  src: url("./GenSenRounded2TW-H.otf") format("opentype");
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: "MyGenSenRounded", "微軟正黑體", sans-serif !important;
+}
+
 :root{
   --main-purple:#9778d6;
   --ink:#443258;
