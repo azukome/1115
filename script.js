@@ -19,7 +19,7 @@ const SPIN_FRICTION = 0.9995;
 const WALL_BOUNCE = 0.95;
 const BALL_BOUNCE = 0.98;
 const MAX_SPIN_SPEED = 14;
-const SEPARATE_ITERATION = 10; // 多次迭代分離，解決重疊
+const SEPARATE_ITERATION = 10;
 
 const BALL_SIZE = 52;
 const BALL_RADIUS = 26;
@@ -124,7 +124,6 @@ function updateBalls(){
     }
   }
 
-  // 多次迭代分離，強制不重疊
   for(let iter = 0; iter < SEPARATE_ITERATION; iter++){
     ballToBallCollision();
   }
@@ -157,13 +156,11 @@ function ballToBallCollision(){
         const ny = dy / dist;
         const overlap = minDist - dist;
 
-        // 位置分開
         a.x -= nx * overlap * 0.5;
         a.y -= ny * overlap * 0.5;
         b.x += nx * overlap * 0.5;
         b.y += ny * overlap * 0.5;
 
-        // 速度彈開
         const dvx = b.vx - a.vx;
         const dvy = b.vy - a.vy;
         const dot = dvx * nx + dvy * ny;
@@ -275,7 +272,6 @@ startBtn.onclick = ()=>{
   runDraw(forcePickIndex);
 };
 
-// ===== 修改後鍵盤邏輯：只記錄，不自動抽獎 =====
 document.addEventListener('keydown', e=>{
   if(e.key === '0'){
     zeroKeyDown = true;
