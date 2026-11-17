@@ -15,11 +15,11 @@ let zeroKeyDown = false;
 
 const GRAVITY = 0.22;
 const FRICTION = 0.99;
-const WALL_BOUNCE = 0.7;
-const BALL_BOUNCE = 0.32;
-const BALL_SEPARATION = 0.12;
-const CHAOS_SPEED = 7;
-const SEPARATE_ITERATION = 8; // 多次迭代分離，解決重疊
+const SPIN_FRICTION = 0.9995;
+const WALL_BOUNCE = 0.95;
+const BALL_BOUNCE = 0.98;
+const MAX_SPIN_SPEED = 14;
+const SEPARATE_ITERATION = 10; // 多次迭代分離，解決重疊
 
 const BALL_SIZE = 52;
 const BALL_RADIUS = 26;
@@ -72,7 +72,14 @@ function updateBalls(){
   for(let b of eggList){
     if(b.isFallingToTube) continue;
 
-    if(!isRunning){
+    if(isRunning){
+      const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+      if(speed < 1.5 && Math.random() < 0.025){
+        const kickAngle = Math.random() * Math.PI * 2;
+        b.vx += Math.cos(kickAngle) * 3.5;
+        b.vy += Math.sin(kickAngle) * 3.5;
+      }
+    }else{
       b.vy += GRAVITY;
       const dxHole = (HOLE_CENTER_X - b.x - b.radius);
       const dyHole = (HOLE_CENTER_Y - b.y - b.radius);
@@ -83,8 +90,17 @@ function updateBalls(){
       }
     }
 
-    b.vx *= FRICTION;
-    b.vy *= FRICTION;
+    const friction = isRunning ? SPIN_FRICTION : FRICTION;
+    b.vx *= friction;
+    b.vy *= friction;
+
+    if(isRunning){
+      const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+      if(speed > MAX_SPIN_SPEED){
+        b.vx = b.vx / speed * MAX_SPIN_SPEED;
+        b.vy = b.vy / speed * MAX_SPIN_SPEED;
+      }
+    }
 
     b.x += b.vx;
     b.y += b.vy;
@@ -98,8 +114,10 @@ function updateBalls(){
       const ny = dy / dist;
       const dot = b.vx * nx + b.vy * ny;
 
-      b.vx = (b.vx - 2 * dot * nx) * WALL_BOUNCE;
-      b.vy = (b.vy - 2 * dot * ny) * WALL_BOUNCE;
+      if(dot > 0){
+        b.vx = (b.vx - 2 * dot * nx) * WALL_BOUNCE;
+        b.vy = (b.vy - 2 * dot * ny) * WALL_BOUNCE;
+      }
 
       b.x = centerX + nx * (cageRadius - b.radius) - b.radius;
       b.y = centerY + ny * (cageRadius - b.radius) - b.radius;
@@ -150,17 +168,12 @@ function ballToBallCollision(){
         const dvy = b.vy - a.vy;
         const dot = dvx * nx + dvy * ny;
         if(dot < 0){
-          const impulse = dot * BALL_BOUNCE * 0.5;
-          a.vx += impulse * nx;
-          a.vy += impulse * ny;
-          b.vx -= impulse * nx;
-          b.vy -= impulse * ny;
+          const impulse = -(1 + BALL_BOUNCE) * dot * 0.5;
+          a.vx -= impulse * nx;
+          a.vy -= impulse * ny;
+          b.vx += impulse * nx;
+          b.vy += impulse * ny;
         }
-
-        a.vx += nx * BALL_SEPARATION;
-        a.vy += ny * BALL_SEPARATION;
-        b.vx -= nx * BALL_SEPARATION;
-        b.vy -= ny * BALL_SEPARATION;
       }
     }
   }
@@ -191,6 +204,9 @@ function sleep(ms){
 async function runDraw(targetIdx){
   if(isRunning) return;
   isRunning = true;
+  const spinDuration = 3000 + Math.random() * 2000;
+  const pickIdx = targetIdx ?? Math.floor(Math.random()*7);
+  const prizeBall = eggList[pickIdx];
   startBtn.disabled = true;
   fallZone.innerHTML = '';
   resultEggWrap.innerHTML = '';
@@ -200,49 +216,58 @@ async function runDraw(targetIdx){
   void resultBox.offsetWidth;
 
   for(let b of eggList){
-    b.vx = (Math.random()-0.5) * CHAOS_SPEED;
-    b.vy = (Math.random()-0.5) * CHAOS_SPEED;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 7 + Math.random() * 3;
+    b.vx = Math.cos(angle) * speed;
+    b.vy = Math.sin(angle) * speed;
     b.isFallingToTube = false;
+    b.dom.style.transition = 'none';
+    b.dom.style.visibility = 'visible';
   }
 
-  eggInner.style.transition = 'transform 2.4s cubic-bezier(0.2,0.8,0.2,1)';
-  eggInner.style.transform = `rotate(${720 + Math.random()*180}deg)`;
+  await sleep(spinDuration);
 
-  await sleep(2400);
-
-  const prizeList = getPrizeArr();
-  const pickIdx = targetIdx ?? Math.floor(Math.random()*7);
-  const prizeBall = eggList[pickIdx];
-  const prizeName = prizeList[pickIdx];
-  const cls = colorClass[pickIdx];
-
+  isRunning = false;
   prizeBall.isFallingToTube = true;
-  prizeBall.x = HOLE_CENTER_X - prizeBall.radius;
-  prizeBall.y = HOLE_CENTER_Y - prizeBall.radius;
+  const dropX = 130 - prizeBall.radius;
+  const dropY = 130 + CAGE_RADIUS - 2 * prizeBall.radius - 4;
+  prizeBall.dom.style.transition = 'left 0.35s ease-in-out, top 0.35s ease-in-out';
+  void prizeBall.dom.offsetWidth;
+  prizeBall.x = dropX;
+  prizeBall.y = dropY;
   prizeBall.dom.style.left = prizeBall.x + 'px';
   prizeBall.dom.style.top = prizeBall.y + 'px';
+  await sleep(350);
+
+  prizeBall.y = 250;
+  prizeBall.dom.style.transition = 'top 0.35s ease-in';
+  void prizeBall.dom.offsetWidth;
+  prizeBall.dom.style.top = prizeBall.y + 'px';
+  await sleep(350);
+  prizeBall.dom.style.visibility = 'hidden';
+  prizeBall.y = dropY;
+
+  const prizeList = getPrizeArr();
+  const prizeName = prizeList[pickIdx];
+  const cls = colorClass[pickIdx];
 
   const eggDom = document.createElement('div');
   eggDom.className = 'fall-egg ' + cls;
   eggDom.innerText = prizeName;
-  eggDom.style.animation = 'none';
+  eggDom.style.animation = 'fall 0.45s cubic-bezier(0.2,0.8,0.2,1) both';
   fallZone.appendChild(eggDom);
 
   const resDom = eggDom.cloneNode(true);
+  resDom.style.animation = 'none';
   resultEggWrap.appendChild(resDom);
 
+  await sleep(450);
   resultBox.querySelector('small').textContent = '🎉 開獎結果';
   resultBox.classList.add('result-celebration');
 
-  setTimeout(async ()=>{
-    eggInner.style.transition = 'none';
-    eggInner.style.transform = 'rotate(0deg)';
-    await sleep(50);
-    eggInner.style.transition = 'transform 2.4s cubic-bezier(0.2,0.8,0.2,1)';
-
+  setTimeout(()=>{
     forcePickIndex = null;
     startBtn.disabled = false;
-    isRunning = false;
   }, 600);
 }
 
@@ -250,18 +275,17 @@ startBtn.onclick = ()=>{
   runDraw(forcePickIndex);
 };
 
+// ===== 修改後鍵盤邏輯：只記錄，不自動抽獎 =====
 document.addEventListener('keydown', e=>{
   if(e.key === '0'){
     zeroKeyDown = true;
     return;
   }
-
   if(zeroKeyDown){
     const num = parseInt(e.key);
     if(!isNaN(num)){
       e.preventDefault();
       forcePickIndex = num === 0 ? null : num - 1;
-      if(!isRunning) runDraw(forcePickIndex);
     }
   }
 });
