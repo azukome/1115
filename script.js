@@ -1,4 +1,3 @@
-const spinCage = document.getElementById('spinCage');
 const eggInner = document.getElementById('eggInner');
 const fallZone = document.getElementById('fallZone');
 const startBtn = document.getElementById('startBtn');
@@ -10,23 +9,33 @@ const colorClass = ['egg-1','egg-2','egg-3','egg-4','egg-5','egg-6','egg-7'];
 let isRunning = false;
 let forcePickIndex = null;
 let eggList = [];
-let animateId = null;
 let zeroKeyDown = false;
 
-const GRAVITY = 0.22;
-const FRICTION = 0.99;
 const SPIN_FRICTION = 0.9995;
 const WALL_BOUNCE = 0.95;
 const BALL_BOUNCE = 0.98;
+const IDLE_GRAVITY = 0.22;
+const IDLE_FRICTION = 0.92;
+const IDLE_BOUNCE = 0.08;
+const IDLE_SLEEP_SPEED = 0.12;
 const MAX_SPIN_SPEED = 14;
 const SEPARATE_ITERATION = 10;
 
-const BALL_SIZE = 52;
-const BALL_RADIUS = 26;
-const CAGE_RADIUS = 108;
-const HOLE_CENTER_X = 130;
-const HOLE_CENTER_Y = 230;
-const HOLE_RADIUS = 32;
+// ========== 全部 *1.25 ==========
+const SCALE = 1.25;
+const BALL_SIZE = 64 * SCALE;
+const BALL_RADIUS = 32 * SCALE;
+const CAGE_SIZE = 260 * SCALE;
+const CAGE_HALF = CAGE_SIZE / 2;
+const CAGE_LEFT = 0;
+const CAGE_TOP = 0;
+const CAGE_RIGHT = CAGE_SIZE;
+const CAGE_BOTTOM = CAGE_SIZE;
+
+const IDLE_START_OFFSETS = [
+  [-52 * SCALE, -40 * SCALE], [0 * SCALE, -40 * SCALE], [52 * SCALE, -40 * SCALE],
+  [-78 * SCALE, 15 * SCALE], [-26 * SCALE, 15 * SCALE], [26 * SCALE, 15 * SCALE], [78 * SCALE, 15 * SCALE]
+];
 
 function initEggs(){
   eggInner.innerHTML = '';
@@ -39,12 +48,10 @@ function initEggs(){
 
     e.style.width = BALL_SIZE + 'px';
     e.style.height = BALL_SIZE + 'px';
-    e.style.fontSize = '16px';
+    e.style.fontSize = (22 * SCALE) + 'px';
 
-    const angle = (Math.PI*2 /7)*i - Math.PI/2;
-    const r = 90;
-    const x = 130 + Math.cos(angle)*r - BALL_RADIUS;
-    const y = 130 + Math.sin(angle)*r - BALL_RADIUS;
+    const x = CAGE_HALF + IDLE_START_OFFSETS[i][0] - BALL_RADIUS;
+    const y = CAGE_HALF + IDLE_START_OFFSETS[i][1] - BALL_RADIUS;
 
     e.style.left = x + 'px';
     e.style.top = y + 'px';
@@ -58,74 +65,79 @@ function initEggs(){
       vy:0,
       size:BALL_SIZE,
       radius:BALL_RADIUS,
+      isSleeping:false,
       isFallingToTube:false
     });
   }
 }
 initEggs();
 
+
 function updateBalls(){
-  const centerX = 130;
-  const centerY = 130;
-  const cageRadius = CAGE_RADIUS;
+  if(!isRunning && eggList.every(b=>b.isSleeping || b.isFallingToTube)) return;
+
+  const idle = !isRunning;
 
   for(let b of eggList){
     if(b.isFallingToTube) continue;
+    if(idle && b.isSleeping) continue;
 
-    if(isRunning){
-      const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-      if(speed < 1.5 && Math.random() < 0.025){
-        const kickAngle = Math.random() * Math.PI * 2;
-        b.vx += Math.cos(kickAngle) * 3.5;
-        b.vy += Math.sin(kickAngle) * 3.5;
-      }
-    }else{
-      b.vy += GRAVITY;
-      const dxHole = (HOLE_CENTER_X - b.x - b.radius);
-      const dyHole = (HOLE_CENTER_Y - b.y - b.radius);
-      const distHole = Math.sqrt(dxHole*dxHole + dyHole*dyHole);
-      if(distHole < 80){
-        b.vx += dxHole * 0.0015;
-        b.vy += dyHole * 0.0015;
-      }
+    if(idle) b.vy += IDLE_GRAVITY;
+    const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+    if(!idle && speed < 1.5 && Math.random() < 0.025){
+      const kickAngle = Math.random() * Math.PI * 2;
+      b.vx += Math.cos(kickAngle) * 3.5;
+      b.vy += Math.sin(kickAngle) * 3.5;
     }
 
-    const friction = isRunning ? SPIN_FRICTION : FRICTION;
+    const friction = idle ? IDLE_FRICTION : SPIN_FRICTION;
     b.vx *= friction;
     b.vy *= friction;
 
-    if(isRunning){
-      const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-      if(speed > MAX_SPIN_SPEED){
-        b.vx = b.vx / speed * MAX_SPIN_SPEED;
-        b.vy = b.vy / speed * MAX_SPIN_SPEED;
-      }
+    const currentSpeed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+    if(currentSpeed > MAX_SPIN_SPEED){
+      b.vx = b.vx / currentSpeed * MAX_SPIN_SPEED;
+      b.vy = b.vy / currentSpeed * MAX_SPIN_SPEED;
     }
 
     b.x += b.vx;
     b.y += b.vy;
 
-    const dx = b.x + b.radius - centerX;
-    const dy = b.y + b.radius - centerY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-
-    if(dist > cageRadius - b.radius){
-      const nx = dx / dist;
-      const ny = dy / dist;
-      const dot = b.vx * nx + b.vy * ny;
-
-      if(dot > 0){
-        b.vx = (b.vx - 2 * dot * nx) * WALL_BOUNCE;
-        b.vy = (b.vy - 2 * dot * ny) * WALL_BOUNCE;
-      }
-
-      b.x = centerX + nx * (cageRadius - b.radius) - b.radius;
-      b.y = centerY + ny * (cageRadius - b.radius) - b.radius;
+    if(b.x < CAGE_LEFT){
+      b.x = CAGE_LEFT;
+      b.vx = -b.vx * (idle ? IDLE_BOUNCE : WALL_BOUNCE);
+      b.isSleeping = false;
+    }
+    if(b.x + b.size > CAGE_RIGHT){
+      b.x = CAGE_RIGHT - b.size;
+      b.vx = -b.vx * (idle ? IDLE_BOUNCE : WALL_BOUNCE);
+      b.isSleeping = false;
+    }
+    if(b.y < CAGE_TOP){
+      b.y = CAGE_TOP;
+      b.vy = -b.vy * (idle ? IDLE_BOUNCE : WALL_BOUNCE);
+      b.isSleeping = false;
+    }
+    if(b.y + b.size > CAGE_BOTTOM){
+      b.y = CAGE_BOTTOM - b.size;
+      b.vy = -b.vy * (idle ? IDLE_BOUNCE : WALL_BOUNCE);
+      b.isSleeping = false;
     }
   }
 
   for(let iter = 0; iter < SEPARATE_ITERATION; iter++){
-    ballToBallCollision();
+    ballToBallCollision(idle ? IDLE_BOUNCE : BALL_BOUNCE);
+  }
+
+  if(idle){
+    for(let b of eggList){
+      if(!b.isFallingToTube && !b.isSleeping &&
+         Math.hypot(b.vx, b.vy) < IDLE_SLEEP_SPEED){
+        b.vx = 0;
+        b.vy = 0;
+        b.isSleeping = true;
+      }
+    }
   }
 
   for(let b of eggList){
@@ -134,7 +146,7 @@ function updateBalls(){
   }
 }
 
-function ballToBallCollision(){
+function ballToBallCollision(restitution){
   for(let i=0;i<eggList.length;i++){
     for(let j=i+1;j<eggList.length;j++){
       const a = eggList[i];
@@ -165,7 +177,11 @@ function ballToBallCollision(){
         const dvy = b.vy - a.vy;
         const dot = dvx * nx + dvy * ny;
         if(dot < 0){
-          const impulse = -(1 + BALL_BOUNCE) * dot * 0.5;
+          if(!isRunning && Math.abs(dot) > IDLE_SLEEP_SPEED){
+            a.isSleeping = false;
+            b.isSleeping = false;
+          }
+          const impulse = -(1 + restitution) * dot * 0.5;
           a.vx -= impulse * nx;
           a.vy -= impulse * ny;
           b.vx += impulse * nx;
@@ -179,7 +195,7 @@ function ballToBallCollision(){
 function startPhysicsLoop(){
   function loop(){
     updateBalls();
-    animateId = requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
   }
   loop();
 }
@@ -217,6 +233,7 @@ async function runDraw(targetIdx){
     const speed = 7 + Math.random() * 3;
     b.vx = Math.cos(angle) * speed;
     b.vy = Math.sin(angle) * speed;
+    b.isSleeping = false;
     b.isFallingToTube = false;
     b.dom.style.transition = 'none';
     b.dom.style.visibility = 'visible';
@@ -226,8 +243,8 @@ async function runDraw(targetIdx){
 
   isRunning = false;
   prizeBall.isFallingToTube = true;
-  const dropX = 130 - prizeBall.radius;
-  const dropY = 130 + CAGE_RADIUS - 2 * prizeBall.radius - 4;
+  const dropX = CAGE_HALF - prizeBall.radius;
+  const dropY = CAGE_BOTTOM - 2 * prizeBall.radius - 4;
   prizeBall.dom.style.transition = 'left 0.35s ease-in-out, top 0.35s ease-in-out';
   void prizeBall.dom.offsetWidth;
   prizeBall.x = dropX;
