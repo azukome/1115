@@ -1,27 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>扭蛋抽獎機</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-<style>
-    @font-face {
-      font-family: "MyGenSenRounded";
-      src: url("./fonts/GenSenRounded2TW-R.otf") format("opentype");
-      font-weight: normal;
-      font-style: normal;
-      font-display: swap;
-    }
-    * {
-      font-family: "MyGenSenRounded", "微軟正黑體", sans-serif !important;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>扭蛋抽獎機</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 <main class="gacha-wrap">
   <header class="title-area">
@@ -40,7 +25,7 @@
         </div>
 
         <div class="machine-body">
-          <div class="spin-cage">
+          <div class="spin-cage-square">
             <div class="cage-shine"></div>
             <div class="egg-inner" id="eggInner"></div>
           </div>
@@ -49,23 +34,28 @@
             <div class="pipe-top"></div>
             <div class="fall-zone" id="fallZone"></div>
           </div>
+
+          <button class="body-start-knob" id="startBtn">
+          </button>
+          <div class="body-coin-slot">
+            <div class="coin-slot-hole"></div>
+          </div>
+          <div class="body-return-slot">
+  <div class="return-slot-hole"></div>
+</div>
+
         </div>
 
-        <div class="machine-base">
-          <div class="dispenser">
-            <div class="dispenser-hole"></div>
-          </div>
-        </div>
+        <div class="machine-base"></div>
       </div>
     </div>
 
     <div class="form-col">
       <div class="prize-set">
         <p>獎品清單（一行一個獎品，對應1~7號扭蛋）</p>
-        <textarea id="prizeTextarea" placeholder=" "></textarea>
+        <textarea id="prizeTextarea"></textarea>
       </div>
-      <button class="start-btn" id="startBtn">開始抽獎</button>
-        
+      
       <div class="result-area" id="resultBox">
         <small>等待開獎</small>
         <div class="result-egg"></div>
